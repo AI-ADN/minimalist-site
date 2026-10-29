@@ -2,6 +2,7 @@
 
 import { memo, useEffect, useRef, useState } from "react";
 import { scenes } from "@/scenes";
+import { SceneAccent } from "@/scenes/iso";
 import type { StepView } from "@/content/selectors";
 
 interface Props {
@@ -25,7 +26,9 @@ const Illustration = memo(function Illustration({ sceneKey, step, playing }: { s
       aria-hidden="true"
       focusable="false"
     >
-      <Scene step={step} />
+      <SceneAccent.Provider value={sceneKey}>
+        <Scene step={step} />
+      </SceneAccent.Provider>
     </svg>
   );
 });

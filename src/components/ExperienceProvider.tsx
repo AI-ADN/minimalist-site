@@ -235,6 +235,12 @@ export function ExperienceProvider({ services, children }: { services: ServiceMe
     return () => observer.disconnect();
   }, []);
 
+  // The frame (canvas, header, rail) takes the colour tone of the section being read.
+  useEffect(() => {
+    const tone = state.activeSectionId ? document.getElementById(state.activeSectionId)?.dataset.tone : undefined;
+    if (tone) document.documentElement.dataset.tone = tone;
+  }, [state.activeSectionId]);
+
   const actions = useMemo<Actions>(
     () => ({
       selectStep: (serviceId, index) => dispatch({ type: "selectStep", serviceId, index }),

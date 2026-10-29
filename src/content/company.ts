@@ -29,3 +29,6 @@ export const company = {
 export const addressOneLine = `${company.address.street}, ${company.address.neighborhood}, ${company.address.locality}, ${company.address.region}, ${company.address.postalCode}, ${company.address.country}`;
 
 export const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressOneLine)}`;
+
+/** Keyless Google Maps embed of the published address. */
+export const mapsEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(addressOneLine)}&hl=es&z=16&output=embed`;

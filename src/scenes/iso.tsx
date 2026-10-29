@@ -1,7 +1,19 @@
-import type { CSSProperties, ReactNode, SVGProps } from "react";
+import { createContext, useContext, type CSSProperties, type ReactNode, type SVGProps } from "react";
 
 export type V3 = [number, number, number];
 export type Tone = "steel" | "raw" | "graphite" | "accent" | "base";
+
+/** Section tone of the scene being drawn; "accent" parts and glows take that section's colour. */
+export const SceneAccent = createContext("fabricacion");
+
+function useToneId(tone: Tone) {
+  const section = useContext(SceneAccent);
+  return tone === "accent" ? `tn-accent-${section}` : `tn-${tone}`;
+}
+
+export function useGlowFill() {
+  return `url(#tn-glow-${useContext(SceneAccent)})`;
+}
 
 const COS30 = 0.8660254;
 const r1 = (n: number) => Math.round(n * 10) / 10;
@@ -41,14 +53,15 @@ interface BoxProps extends Placed {
 
 /** Visible faces: top, x+w (right) and y+d (left). Draw back-to-front. */
 export function Box({ x, y, z, w, d, h, tone = "steel", className, style, children }: BoxProps) {
+  const id = useToneId(tone);
   const X = x + w;
   const Y = y + d;
   const Z = z + h;
   return (
     <g className={className} style={style}>
-      <polygon points={pts([x, Y, z], [X, Y, z], [X, Y, Z], [x, Y, Z])} fill={`url(#tn-${tone}-l)`} className="iso-face" />
-      <polygon points={pts([X, y, z], [X, Y, z], [X, Y, Z], [X, y, Z])} fill={`url(#tn-${tone}-r)`} className="iso-face" />
-      <polygon points={pts([x, y, Z], [X, y, Z], [X, Y, Z], [x, Y, Z])} fill={`url(#tn-${tone}-t)`} className="iso-face" />
+      <polygon points={pts([x, Y, z], [X, Y, z], [X, Y, Z], [x, Y, Z])} fill={`url(#${id}-l)`} className="iso-face" />
+      <polygon points={pts([X, y, z], [X, Y, z], [X, Y, Z], [X, y, Z])} fill={`url(#${id}-r)`} className="iso-face" />
+      <polygon points={pts([x, y, Z], [X, y, Z], [X, Y, Z], [x, Y, Z])} fill={`url(#${id}-t)`} className="iso-face" />
       <polyline points={pts([x, Y, Z], [X, Y, Z], [X, y, Z])} className="iso-edge" />
       {children}
     </g>
@@ -67,14 +80,15 @@ interface CylProps extends Placed {
 
 /** Vertical cylinder standing on (x, y, z). */
 export function Cyl({ x, y, z, r, h, tone = "steel", cap = true, className, style }: CylProps) {
+  const id = useToneId(tone);
   const [cx, top] = iso([x, y, z + h]);
   const [, bottom] = iso([x, y, z]);
   const { rx, ry } = ellipseR(r);
   const side = `M${cx - rx} ${top} L${cx - rx} ${bottom} A${rx} ${ry} 0 0 0 ${cx + rx} ${bottom} L${cx + rx} ${top} Z`;
   return (
     <g className={className} style={style}>
-      <path d={side} fill={`url(#tn-${tone}-c)`} />
-      {cap && <ellipse cx={cx} cy={top} rx={rx} ry={ry} fill={`url(#tn-${tone}-t)`} className="iso-cap" />}
+      <path d={side} fill={`url(#${id}-c)`} />
+      {cap && <ellipse cx={cx} cy={top} rx={rx} ry={ry} fill={`url(#${id}-t)`} className="iso-cap" />}
     </g>
   );
 }

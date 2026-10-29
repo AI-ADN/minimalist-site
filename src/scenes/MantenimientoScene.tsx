@@ -1,4 +1,4 @@
-import { Box, Check, Cyl, Flat, Pedestal, Shadow, ellipseR, iso, show, tr } from "./iso";
+import { Box, Check, Cyl, Flat, Pedestal, Shadow, ellipseR, iso, show, tr, useGlowFill } from "./iso";
 import type { SceneProps } from "./types";
 
 const Z = 16;
@@ -27,6 +27,7 @@ function Pulley() {
 }
 
 export function MantenimientoScene({ step }: SceneProps) {
+  const glow = useGlowFill();
   const assembled = step === 0 || step === 3;
   const coverOff = step === 1 || step === 2 ? tr(-92, 0, 44) : "none";
   const loose = step === 1 ? tr(0, 0, 100) : step === 2 ? tr(100, 60, 4) : "none";
@@ -109,7 +110,7 @@ export function MantenimientoScene({ step }: SceneProps) {
       {/* Evaluación: scan ring around the worn zone */}
       <g className="t" style={{ opacity: step === 0 ? 1 : 0 }}>
         <g className="loop-scan">
-          <Flat x={SX} y={SY} z={121} r={22} fill="url(#tn-glow)" />
+          <Flat x={SX} y={SY} z={121} r={22} fill={glow} />
           <Flat x={SX} y={SY} z={121} r={17} className="scan-ring" />
         </g>
       </g>

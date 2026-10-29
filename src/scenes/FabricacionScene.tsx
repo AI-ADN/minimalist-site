@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Box, Check, Cyl, Flat, Path3, Pedestal, Shadow, iso, line, show, tr, type V3 } from "./iso";
+import { Box, Check, Cyl, Flat, Path3, Pedestal, Shadow, iso, line, show, tr, useGlowFill, type V3 } from "./iso";
 import type { SceneProps } from "./types";
 
 const Z = 16;
@@ -30,6 +30,7 @@ const sweep = (units: number) => {
 };
 
 export function FabricacionScene({ step }: SceneProps) {
+  const glow = useGlowFill();
   const offcutA = step === 0 ? "none" : step === 1 ? tr(7, -7, 0) : tr(46, -46, 0);
   const offcutB = step === 0 ? "none" : step === 1 ? tr(-7, 7, 0) : tr(-46, 46, 0);
 
@@ -98,7 +99,7 @@ export function FabricacionScene({ step }: SceneProps) {
           <Box x={58} y={-34} z={104} w={24} d={26} h={56} tone="graphite" />
           <Cyl x={70} y={-21} z={64} r={5} h={40} tone="steel" />
           <line {...line([70, -21, 64], [70, -21, T])} className="jet loop-flicker" />
-          <Flat x={70} y={-21} z={T} r={9} fill="url(#tn-glow)" className="loop-pulse" />
+          <Flat x={70} y={-21} z={T} r={9} fill={glow} className="loop-pulse" />
         </g>
         <Box x={120} y={-46} z={Z} w={12} d={12} h={144} tone="graphite" />
       </g>

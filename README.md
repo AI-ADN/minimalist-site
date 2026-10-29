@@ -20,7 +20,21 @@ npm run typecheck  # comprobación de tipos
 npm run lint       # ESLint
 ```
 
-El resultado de `npm run build` es una página estática; puede desplegarse en cualquier hosting compatible con Next.js. No hay backend, formularios ni variables de entorno.
+La página se prerenderiza como estática. El formulario de contacto envía a la ruta de servidor `POST /api/contacto`, así que el despliegue necesita un hosting que ejecute Next.js (no `output: "export"`).
+
+### Formulario de contacto (pendiente de configurar)
+
+La ruta valida los datos en servidor, descarta envíos con el campo trampa, limita a 5 envíos por IP cada 10 minutos (en memoria, por instancia) y entrega el mensaje por correo mediante la API REST de [Resend](https://resend.com/docs/api-reference/emails/send-email), con `reply_to` al correo del visitante y una `Idempotency-Key` por envío para evitar duplicados.
+
+Copia `.env.example` a `.env.local` y define:
+
+| Variable | Uso |
+| --- | --- |
+| `RESEND_API_KEY` | Clave privada de Resend (solo servidor). |
+| `CONTACT_TO_EMAIL` | Destinatario(s) en TUNSA, separados por coma. |
+| `CONTACT_FROM_EMAIL` | Remitente de un dominio verificado en Resend, p. ej. `Sitio TUNSA <web@dominio>`. |
+
+Sin estas variables la ruta responde `503 not_configured` y la interfaz lo dice claramente: el mensaje **no** se envía y se ofrece abrirlo en la aplicación de correo del visitante con los datos ya escritos. Para usar otro proveedor, sustituye solo la llamada `fetch` de `src/app/api/contacto/route.ts`.
 
 ## Estructura
 
@@ -62,7 +76,8 @@ La sección, el timeline, la navegación lateral y la barra móvil se generan au
 - La barra lateral (escritorio) y la barra horizontal (móvil) marcan el servicio visible, desplazan compensando el header y registran el hash en el historial. Atrás/adelante y abrir un hash directo funcionan.
 - El recorrido avanza solo en el servicio visible (≈5,2 s por etapa), se pausa al salir de la sección y se detiene en la última etapa. Elegir una etapa pausa el avance; reanudar requiere pulsar Reproducir.
 - Con `prefers-reduced-motion`: sin autoplay ni scroll suavizado, escenas estáticas y pasos manuales.
-- «Consultar este servicio» lleva a Contacto con `?servicio=` y prepara el asunto del correo con el nombre del servicio.
+- «Consultar este servicio» lleva a Contacto con `?servicio=`: preselecciona el servicio en el formulario y prepara el asunto de los enlaces de correo.
+- Cada capítulo tiene un tono de color propio (`[data-tone]` en `globals.css`): acento, paneles y escena se tiñen con él, y el marco (lienzo, header y rail) adopta el tono del capítulo que se está leyendo. Los degradados de acento de las escenas SVG leen las mismas variables, así que para cambiar un color basta editar su bloque `[data-tone]`.
 
 ## Validación realizada
 

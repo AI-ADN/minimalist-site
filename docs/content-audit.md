@@ -97,8 +97,11 @@ No se encontró una lista explícita en servicios, procesos ni maquinaria. Las c
 
 ## Contacto en la interfaz
 
-- «Enviar correo» abre `mailto:` con el asunto preparado; si se llega desde un servicio, incluye su nombre (codificado). No hay formulario ni confirmación simulada.
-- «Llamar» usa `tel:`. «Ver en mapa» abre una búsqueda de Google Maps con la dirección publicada.
+- Formulario (nombre, empresa, correo, teléfono, servicio, mensaje) que envía a `POST /api/contacto`. **Pendiente de configurar** el proveedor de correo; mientras tanto la interfaz indica que el mensaje no se envió y ofrece abrirlo en la aplicación de correo. Solo se muestra «Solicitud enviada» cuando el proveedor acepta el envío.
+- «Enviar correo» abre `mailto:` con el asunto preparado; si se llega desde un servicio, incluye su nombre (codificado).
+- «Llamar» usa `tel:`. El mapa es el embed público de Google Maps (sin clave) para la dirección publicada; «Cómo llegar» abre la búsqueda en Google Maps.
+- El mapa de Google muestra para esa dirección el C.P. 66482, mientras que el sitio publicado indica 66480. Se conserva 66480 hasta que TUNSA lo confirme.
+- La paleta por sección es una propuesta visual, no colores oficiales de TUNSA.
 
 ## Pendientes de validación con TUNSA
 
@@ -110,3 +113,6 @@ No se encontró una lista explícita en servicios, procesos ni maquinaria. Las c
 6. Software CAD/CAM, herramientas de diagnóstico y equipo de integración, si desean publicarlos.
 7. Dominio definitivo para URL canónica, Open Graph, `sitemap` y `robots` (hoy no configurados).
 8. Aprobación de los textos redactados para cada servicio y etapa.
+9. Cuenta y dominio de envío para el formulario (Resend u otro proveedor), destinatario(s) y prueba de recepción real.
+10. Aviso de privacidad para los datos que recoge el formulario (texto y enlace a cargo de TUNSA).
+11. Código postal de la dirección (66480 publicado vs. 66482 en Google Maps).

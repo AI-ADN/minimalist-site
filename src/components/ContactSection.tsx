@@ -1,7 +1,9 @@
 "use client";
 
-import { addressOneLine, company, mapsUrl } from "@/content/company";
+import { useMemo } from "react";
+import { addressOneLine, company, mapsEmbedUrl, mapsUrl } from "@/content/company";
 import { mailtoHref } from "@/lib/contact";
+import { ContactForm } from "./ContactForm";
 import { useConsult, useExperienceActions } from "./ExperienceProvider";
 import { ArrowUpRight, CloseIcon, MailIcon, PhoneIcon, PinIcon } from "./icons";
 
@@ -9,19 +11,22 @@ export function ContactSection() {
   const { consult, serviceNames } = useConsult();
   const { clearConsult } = useExperienceActions();
   const context = consult ? { serviceName: serviceNames[consult.serviceId], topic: consult.topic } : null;
+  const serviceList = useMemo(() => Object.entries(serviceNames).map(([id, name]) => ({ id, name })), [serviceNames]);
 
   return (
-    <section id="contacto" className="chapter contact" data-section aria-labelledby="contacto-title">
+    <section id="contacto" className="chapter contact" data-section data-tone="contacto" aria-labelledby="contacto-title">
       <div className="contact__grid">
         <div className="card card--panel contact__main">
-          <p className="eyebrow">Contacto</p>
-          <h2 id="contacto-title" className="info__title" data-anchor-focus tabIndex={-1}>
-            Cuéntanos qué necesitas
-          </h2>
-          <p className="info__intro">
-            Comparte la pieza, el equipo o el proyecto que quieres resolver. Si tienes planos, modelos o muestras,
-            menciónalos en tu mensaje para revisar el alcance.
-          </p>
+          <header className="contact__head">
+            <p className="eyebrow">Contacto</p>
+            <h2 id="contacto-title" className="info__title" data-anchor-focus tabIndex={-1}>
+              Cuéntanos qué necesitas
+            </h2>
+            <p className="info__intro">
+              Comparte la pieza, el equipo o el proyecto que quieres resolver. Si tienes planos, modelos o muestras,
+              menciónalos para revisar el alcance.
+            </p>
+          </header>
 
           <div className="contact__context" aria-live="polite">
             {context && (
@@ -37,51 +42,74 @@ export function ContactSection() {
             )}
           </div>
 
-          <div className="contact__actions">
-            <a className="btn btn--primary btn--lg" href={mailtoHref(context)}>
-              <MailIcon size={18} />
-              {context ? `Enviar correo sobre ${context.serviceName}` : "Enviar correo"}
-            </a>
-            <a className="btn btn--ghost btn--lg" href={`tel:${company.phoneE164}`}>
-              <PhoneIcon size={18} />
-              Llamar al {company.phoneDisplay}
-            </a>
-          </div>
-          <p className="muted small">El botón de correo abre tu aplicación de correo con el asunto preparado.</p>
+          <ContactForm services={serviceList} consult={consult} />
         </div>
 
-        <address className="card contact__details">
-          <div className="card__head">
-            <h3 className="card__title">Datos de contacto</h3>
-          </div>
-          <dl className="contact__list">
-            <div>
-              <dt>Correo</dt>
-              <dd>
-                <a href={`mailto:${company.email}`}>{company.email}</a>
-              </dd>
-            </div>
-            <div>
-              <dt>Teléfono</dt>
-              <dd>
-                <a href={`tel:${company.phoneE164}`}>{company.phoneDisplay}</a>
-              </dd>
-            </div>
-            <div>
-              <dt>Dirección</dt>
-              <dd>
+        <div className="contact__side">
+          <figure className="card contact__map">
+            <iframe
+              title={`Mapa de Google con la ubicación de ${company.shortName}: ${addressOneLine}`}
+              src={mapsEmbedUrl}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+            <figcaption className="contact__map-caption">
+              <span className="contact__map-pin" aria-hidden="true">
+                <PinIcon size={16} />
+              </span>
+              <span>
+                <strong>{company.shortName}</strong>
                 {company.address.street}, {company.address.neighborhood}
-                <br />
-                {company.address.locality}, {company.address.region}, {company.address.postalCode}, {company.address.country}
-              </dd>
+              </span>
+              <a
+                className="btn btn--ghost btn--sm"
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Cómo llegar a ${addressOneLine} en Google Maps (abre en otra pestaña)`}
+              >
+                Cómo llegar
+                <ArrowUpRight size={14} />
+              </a>
+            </figcaption>
+          </figure>
+
+          <address className="card contact__details">
+            <h3 className="card__title">Datos de contacto</h3>
+            <dl className="contact__list">
+              <div>
+                <dt>Correo</dt>
+                <dd>
+                  <a href={mailtoHref(context)}>{company.email}</a>
+                </dd>
+              </div>
+              <div>
+                <dt>Teléfono</dt>
+                <dd>
+                  <a href={`tel:${company.phoneE164}`}>{company.phoneDisplay}</a>
+                </dd>
+              </div>
+              <div className="contact__list-wide">
+                <dt>Dirección</dt>
+                <dd>
+                  {company.address.street}, {company.address.neighborhood}, {company.address.locality},{" "}
+                  {company.address.region}, {company.address.postalCode}
+                </dd>
+              </div>
+            </dl>
+            <div className="contact__quick">
+              <a className="btn btn--ghost" href={mailtoHref(context)}>
+                <MailIcon size={16} />
+                Enviar correo
+              </a>
+              <a className="btn btn--ghost" href={`tel:${company.phoneE164}`}>
+                <PhoneIcon size={16} />
+                Llamar
+              </a>
             </div>
-          </dl>
-          <a className="btn btn--ghost" href={mapsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Ver ${addressOneLine} en Google Maps (abre en otra pestaña)`}>
-            <PinIcon size={16} />
-            Ver en mapa
-            <ArrowUpRight size={14} />
-          </a>
-        </address>
+          </address>
+        </div>
       </div>
 
       <footer className="site-footer">

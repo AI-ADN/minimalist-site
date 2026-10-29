@@ -29,7 +29,12 @@ export function ServiceNav({ items, variant }: { items: Item[]; variant: "rail" 
       <ol ref={listRef} className={`${variant}__list`}>
         {items.map((item, i) => (
           <li key={item.id}>
-            <a href={`#${item.id}`} className={`${variant}__link`} aria-current={active === item.id ? "location" : undefined}>
+            <a
+              href={`#${item.id}`}
+              className={`${variant}__link`}
+              data-tone={item.id}
+              aria-current={active === item.id ? "location" : undefined}
+            >
               <ServiceGlyph name={item.icon} size={variant === "rail" ? 22 : 18} />
               {variant === "rail" && (
                 <span className="rail__num" aria-hidden="true">

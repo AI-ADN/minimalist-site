@@ -20,7 +20,7 @@ export function AboutSection() {
   const groups = groupByCategory(equipment);
 
   return (
-    <section id="nosotros" className="chapter about" data-section aria-labelledby="nosotros-title">
+    <section id="nosotros" className="chapter about" data-section data-tone="nosotros" aria-labelledby="nosotros-title">
       <div className="about__grid">
         <div className="card card--panel about__intro">
           <p className="eyebrow">Nosotros</p>
